@@ -1,6 +1,7 @@
 import express from 'express';
 import AWS from 'aws-sdk';
-import {getOneUser} from './models/getOneUser.js';
+import { router }  from './routes/registration.js';
+import { routerDelete } from './routes/deleteUser.js';
 
 const app = express();
 const port = 3000;
@@ -28,14 +29,6 @@ AWS.config.update({
 
 AWS.config.loadFromPath('./config.json');
 
-const documentClient = new AWS.DynamoDB.DocumentClient();
-
-const parameters = {
-    TableName: 'Users',
-    Key: {
-        id: 0,
-    }
-  };
-
-// Test get one user
-getOneUser(documentClient, parameters);
+// Route Middleware for Registration
+app.use('/api', router);
+app.use('/api', routerDelete);
