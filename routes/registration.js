@@ -1,6 +1,7 @@
 import express from 'express';
 import AWS from 'aws-sdk';
 import bcrypt from "bcryptjs";
+import { registerValidation } from '../validation/validate.js';
 import { handleGetUser } from '../models/handleGetUser.js';
 import { handleRegistration } from '../models/handleRegistration.js';
 
@@ -14,6 +15,8 @@ router.post('/register', async(request, response) => {
     // request body should include at least username, email and password
 
     // Validate data
+    const validateResult = registerValidation(request.body);
+    if (validateResult !== 'Everything Okay') return response.status(400).send(validateResult);
 
     // Check if user exists in database, if not create account else send error message
     const parametersGetUser = {
@@ -46,10 +49,11 @@ router.post('/register', async(request, response) => {
         const checkUserExist = await handleGetUser(documentClient, parametersGetUser);
 
         // If Username already exists, prevent registration.
-        if (checkUserExist.Item.Username == parametersGetUser.Key.Username) {
+        if (Object.keys(checkUserExist).length > 0) {
             console.log(`${parametersGetUser.Key.Username} exists`);
             response.send('Username already exist');
         }
+
         // Only register if user doesn't exist
         else {
             try {
@@ -61,7 +65,7 @@ router.post('/register', async(request, response) => {
         }
 
     } catch (error) {
-        response.status(400).send('error');
+        response.status(400).send(error);
     }
 
 
