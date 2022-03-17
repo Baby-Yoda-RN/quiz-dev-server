@@ -5,10 +5,10 @@ import { registerValidation } from '../validation/validate.js';
 import { handleGetUser } from '../models/handleGetUser.js';
 import { handleRegistration } from '../models/handleRegistration.js';
 
-export const router = express.Router();
+export const routerRegister = express.Router();
 
 // The client make a post request to '/register', allowing a new account to be created (add) to database.
-router.post('/register', async(request, response) => {
+routerRegister.post('/register', async(request, response) => {
 
     const documentClient = new AWS.DynamoDB.DocumentClient();
 
