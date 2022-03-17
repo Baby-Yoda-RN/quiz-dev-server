@@ -1,6 +1,6 @@
 import express from 'express';
 import AWS from 'aws-sdk';
-import { router }  from './routes/registration.js';
+import { routerRegister }  from './routes/registration.js';
 import { routerDelete } from './routes/deleteUser.js';
 
 const app = express();
@@ -30,5 +30,5 @@ AWS.config.update({
 AWS.config.loadFromPath('./config.json');
 
 // Route Middleware for Registration
-app.use('/api', router);
+app.use('/api', routerRegister);
 app.use('/api', routerDelete);
