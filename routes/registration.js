@@ -15,8 +15,12 @@ routerRegister.post('/register', async(request, response) => {
     // request body should include at least username, email and password
 
     // Validate data
-    const validateResult = registerValidation(request.body);
-    if (validateResult !== 'Everything Okay') return response.status(400).send(validateResult);
+    try {
+        const validateResult = registerValidation(request.body);
+        if (validateResult !== 'Everything Okay') return response.status(400).send(validateResult);
+    } catch (error) {
+        console.log(error);
+    }
 
     // Check if user exists in database, if not create account else send error message
     const parametersGetUser = {
