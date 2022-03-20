@@ -1,12 +1,14 @@
 import express from 'express';
 import AWS from 'aws-sdk';
 import { routerRegister }  from './routes/registration.js';
+import { routerLogin }  from './routes/login.js';
 import { routerDelete } from './routes/deleteUser.js';
 import { routerGetAllUsers } from './routes/getAllUsers.js';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const port = 3000;
-
 
 // Middleware
 app.use(express.json({ limit: '5MB', extended: true }));
@@ -32,5 +34,6 @@ AWS.config.loadFromPath('./config.json');
 
 // Route Middleware for Registration
 app.use('/api', routerRegister);
+app.use('/api', routerLogin);
 app.use('/api', routerDelete);
 app.use('/api', routerGetAllUsers);
