@@ -1,6 +1,6 @@
 import express from 'express';
 import AWS from 'aws-sdk';
-import { handleGetAllUsers } from '../models/handleGetAllUsers.js';
+import { readWriteToDatabase } from '../models/readWriteToDatabase.js';
 
 export const routerGetAllUsers = express.Router();
 
@@ -15,7 +15,7 @@ routerGetAllUsers.post('/getallusers', async(request, response) => {
     };
 
     try {
-        const allUsers = await handleGetAllUsers(documentClient, parametersGetAllUsers);
+        const allUsers = await readWriteToDatabase(documentClient, parametersGetAllUsers, 'scan');
         console.log(allUsers);
         response.send(allUsers);
 

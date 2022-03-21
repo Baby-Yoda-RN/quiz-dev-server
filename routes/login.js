@@ -3,7 +3,7 @@ import AWS from 'aws-sdk';
 import jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 dotenv.config({path: '../.env'});
-import { handleLogin } from '../models/handleLogin.js';
+import { readWriteToDatabase } from '../models/readWriteToDatabase.js';
 
 export const routerLogin = express.Router();
 
@@ -23,7 +23,7 @@ routerLogin.post('/login', async(request, response) => {
 
     try {
         // Check if Username already exist
-        const checkUserExist = await handleLogin(documentClient, parametersGetUser);
+        const checkUserExist = await readWriteToDatabase(documentClient, parametersGetUser, 'get');
 
         // If Username exists
         if (Object.keys(checkUserExist).length > 0) {

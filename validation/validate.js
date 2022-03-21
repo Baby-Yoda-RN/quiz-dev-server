@@ -12,7 +12,7 @@ export const registerValidation = data => {
     if(!validator.isLength(data.Username, {max: 15,})) return 'Username must be at most 15 characters';
 
     // Check if password meet requirements
-    if(!validator.isLength(data.Password, {min: 6,})) return 'Password must be at most 6 characters';
+    if(!validator.isLength(data.Password, {min: 6,})) return 'Password must be at least 6 characters';
 
     if(!validator.isLength(data.Password, {max: 25,})) return 'Password must be at most 25 characters';
 

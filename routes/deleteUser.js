@@ -1,7 +1,6 @@
 import express from 'express';
 import AWS from 'aws-sdk';
-import { handleGetUser } from '../models/handleGetUser.js';
-import { handleDeleteUser } from '../models/handleDeleteUser.js';
+import { readWriteToDatabase } from '../models/readWriteToDatabase.js';
 
 export const routerDelete = express.Router();
 
@@ -29,12 +28,12 @@ routerDelete.post('/deleteuser', async(request, response) => {
 
     try {
         // Check if Username already exist
-        const checkUserExist = await handleGetUser(documentClient, parametersGetUser);
+        const checkUserExist = await readWriteToDatabase(documentClient, parametersGetUser, 'get');
 
         // If Username already exists, delete account.
         if (Object.keys(checkUserExist).length > 0) {
             try {
-                handleDeleteUser(documentClient, parametersDelete);
+                readWriteToDatabase(documentClient, parametersDelete, 'delete');
                 response.send('Successfully Deleted User');
             } catch (error) {
                 response.status(400).send(error);

@@ -2,8 +2,7 @@ import express from 'express';
 import AWS from 'aws-sdk';
 import bcrypt from "bcryptjs";
 import { registerValidation } from '../validation/validate.js';
-import { handleGetUser } from '../models/handleGetUser.js';
-import { handleRegistration } from '../models/handleRegistration.js';
+import { readWriteToDatabase } from '../models/readWriteToDatabase.js';
 
 export const routerRegister = express.Router();
 
@@ -17,9 +16,13 @@ routerRegister.post('/register', async(request, response) => {
     // Validate data
     try {
         const validateResult = registerValidation(request.body);
-        if (validateResult !== 'Everything Okay') return response.status(400).send(validateResult);
+        if (validateResult !== 'Everything Okay') {
+            console.log(validateResult);
+            return response.status(400).send(validateResult);
+        }
     } catch (error) {
         console.log(error);
+        response.status(400).send(error);
     }
 
     // Check if user exists in database, if not create account else send error message
@@ -50,7 +53,7 @@ routerRegister.post('/register', async(request, response) => {
 
     try {
         // Check if Username already exist
-        const checkUserExist = await handleGetUser(documentClient, parametersGetUser);
+        const checkUserExist = await readWriteToDatabase(documentClient, parametersGetUser, 'get');
 
         // If Username already exists, prevent registration.
         if (Object.keys(checkUserExist).length > 0) {
@@ -61,7 +64,7 @@ routerRegister.post('/register', async(request, response) => {
         // Only register if user doesn't exist
         else {
             try {
-                handleRegistration(documentClient, parametersRegister);
+                readWriteToDatabase(documentClient, parametersRegister, 'put');
                 response.send('Successfully Added User');
             } catch (error) {
                 response.status(400).send(error);
@@ -71,8 +74,5 @@ routerRegister.post('/register', async(request, response) => {
     } catch (error) {
         response.status(400).send(error);
     }
-
-
-
 
 });
