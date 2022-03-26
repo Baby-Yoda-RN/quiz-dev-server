@@ -16,8 +16,8 @@ routerGetAllTests.get('/getalltests', async(request, response) => {
 
     try {
         const allTests = await readWriteToDatabase(documentClient, parametersGetAllTests, 'scan');
-        console.log(allTests);
-        response.send(allTests);
+        console.log(allTests.Items);
+        response.send(allTests.Items);
 
     } catch (error) {
         response.status(400).send(error);
