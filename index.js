@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import AWS from 'aws-sdk';
 import { routerRegister }  from './routes/registration.js';
 import { routerLogin }  from './routes/login.js';
@@ -10,6 +11,9 @@ dotenv.config();
 
 const app = express();
 const port = 3000;
+
+// CORS
+app.use(cors());
 
 // Middleware
 app.use(express.json({ limit: '5MB', extended: true }));
