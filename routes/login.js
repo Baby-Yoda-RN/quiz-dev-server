@@ -1,5 +1,6 @@
 import express from 'express';
 import AWS from 'aws-sdk';
+import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 dotenv.config({path: '../.env'});
@@ -16,37 +17,36 @@ routerLogin.post('/login', async(request, response) => {
     const parametersGetUser = {
         TableName: request.body.TableName, 
         Key: {
-            Username: request.body.Username,
+            Email: request.body.Email,
         }
     };
 
 
     try {
-        // Check if Username already exist
+        // Check if Email already exist
         const checkUserExist = await readWriteToDatabase(documentClient, parametersGetUser, 'get');
 
-        // If Username exists
+        // If Email exists
         if (Object.keys(checkUserExist).length > 0) {
-            console.log(`${parametersGetUser.Key.Username} exists`);
+            console.log(`${parametersGetUser.Key.Email} exists`);
 
             // If the hash password from database is same as hash password from request body, then login is valid.
-            if(checkUserExist.Item.Password === request.body.Password){
+            if(await bcrypt.compare(request.body.Password, checkUserExist.Item.Password)){
                 //Create and assign a token
                 const token = jwt.sign({ 
-                    data: { Username: request.body.Username } },
+                    data: { Email: request.body.Email } },
                     process.env.TOKEN_SECRET, {
                     expiresIn: 86400, //expires in 24 hours
                 });
-
                 response.send(token);
             } else {
-                response.send('Wrong Username or Password.');
+                response.send('Wrong Email or Password.');
             }
 
         }
 
         else {
-            response.send('Wrong Username or Password.');
+            response.send('Wrong Email or Password.');
         }
 
     } catch (error) {
