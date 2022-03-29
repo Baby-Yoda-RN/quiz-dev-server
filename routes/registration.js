@@ -2,31 +2,34 @@ import express from 'express';
 import AWS from 'aws-sdk';
 import bcrypt from "bcryptjs";
 import { registerValidation } from '../validation/validate.js';
-import { handleGetUser } from '../models/handleGetUser.js';
-import { handleRegistration } from '../models/handleRegistration.js';
+import { readWriteToDatabase } from '../models/readWriteToDatabase.js';
 
-export const router = express.Router();
+export const routerRegister = express.Router();
 
 // The client make a post request to '/register', allowing a new account to be created (add) to database.
-router.post('/register', async(request, response) => {
+routerRegister.post('/register', async(request, response) => {
 
     const documentClient = new AWS.DynamoDB.DocumentClient();
 
-    // request body should include at least username, email and password
+    // request body should include at least email and password
 
     // Validate data
     try {
         const validateResult = registerValidation(request.body);
-        if (validateResult !== 'Everything Okay') return response.status(400).send(validateResult);
+        if (validateResult !== 'Everything Okay') {
+            console.log(validateResult);
+            return response.status(400).send(validateResult);
+        }
     } catch (error) {
         console.log(error);
+        response.status(400).send(error);
     }
 
     // Check if user exists in database, if not create account else send error message
     const parametersGetUser = {
         TableName: request.body.TableName, 
         Key: {
-            Username: request.body.Username,
+            Email: request.body.Email,
             //id: 0, // should we increment id starting with 0 or use uuid?
         }
     };
@@ -39,29 +42,28 @@ router.post('/register', async(request, response) => {
         TableName: request.body.TableName, 
         Item: {
             // id: 0, 
-            email: request.body.email, 
-            Username: request.body.Username, 
+            Email: request.body.Email, 
             Password: hashPassword
         },
-        // This makes sure that if Username exists, it will NOT add to database.
-        ConditionExpression: "attribute_not_exists(Username)"
+        // This makes sure that if Email exists, it will NOT add to database.
+        ConditionExpression: "attribute_not_exists(Email)"
     };
 
 
     try {
-        // Check if Username already exist
-        const checkUserExist = await handleGetUser(documentClient, parametersGetUser);
+        // Check if Email already exist
+        const checkUserExist = await readWriteToDatabase(documentClient, parametersGetUser, 'get');
 
-        // If Username already exists, prevent registration.
+        // If Email already exists, prevent registration.
         if (Object.keys(checkUserExist).length > 0) {
-            console.log(`${parametersGetUser.Key.Username} exists`);
-            response.send('Username already exist');
+            console.log(`${parametersGetUser.Key.Email} exists`);
+            response.send('Email already exist');
         }
 
         // Only register if user doesn't exist
         else {
             try {
-                handleRegistration(documentClient, parametersRegister);
+                readWriteToDatabase(documentClient, parametersRegister, 'put');
                 response.send('Successfully Added User');
             } catch (error) {
                 response.status(400).send(error);
@@ -71,8 +73,5 @@ router.post('/register', async(request, response) => {
     } catch (error) {
         response.status(400).send(error);
     }
-
-
-
 
 });
