@@ -4,7 +4,7 @@ import validator from "validator";
 export const registerValidation = (data) => {
   try {
     // Check if email is valid
-    if (!validator.isEmail(data.email)) return "Email is wrong format";
+    if (!validator.isEmail(data.Email)) return "Email is wrong format";
 
     // Check if password meet requirements
     if (!validator.isLength(data.Password, { min: 6 }))
