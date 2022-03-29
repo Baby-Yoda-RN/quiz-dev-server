@@ -13,24 +13,23 @@ routerDelete.post('/deleteuser', async(request, response) => {
     const parametersGetUser = {
         TableName: request.body.TableName, 
         Key: {
-            Username: request.body.Username,
-            //id: 0, // should we increment id starting with 0 or use uuid?
+            Email: request.body.Email,
         }
     };
 
     const parametersDelete = {
         TableName: request.body.TableName, 
         Key: {
-            Username: request.body.Username, 
+            Email: request.body.Email, 
         },
     };
 
 
     try {
-        // Check if Username already exist
+        // Check if Email already exist
         const checkUserExist = await readWriteToDatabase(documentClient, parametersGetUser, 'get');
 
-        // If Username already exists, delete account.
+        // If Email already exists, delete account.
         if (Object.keys(checkUserExist).length > 0) {
             try {
                 readWriteToDatabase(documentClient, parametersDelete, 'delete');
@@ -42,8 +41,8 @@ routerDelete.post('/deleteuser', async(request, response) => {
 
         // Only register if user doesn't exist
         else {
-            console.log(`${parametersGetUser.Key.Username} doesn't exist`);
-            response.send(`${parametersGetUser.Key.Username} doesn't exist`);
+            console.log(`${parametersGetUser.Key.Email} doesn't exist`);
+            response.send(`${parametersGetUser.Key.Email} doesn't exist`);
         }
 
     } catch (error) {
