@@ -52,6 +52,7 @@ routerRegister.post('/register', async(request, response) => {
 
     try {
         // Check if Email already exist
+
         const checkUserExist = await readWriteToDatabase(documentClient, parametersGetUser, 'get');
 
         // If Email already exists, prevent registration.

@@ -1,19 +1,21 @@
-import validator from 'validator';
+import validator from "validator";
 
 // Register Validation: validate user input data such as if the email is in correct format, username meets specific length/characters, etc.
-export const registerValidation = data => {
-
+export const registerValidation = (data) => {
+  try {
     // Check if email is valid
-    if(!validator.isEmail(data.email)) return 'Email is wrong format'; 
+    if (!validator.isEmail(data.email)) return "Email is wrong format";
+
+    // Check if password meet requirements
+    if (!validator.isLength(data.Password, { min: 6 }))
+      return "Password must be at least 6 characters";
+
+    if (!validator.isLength(data.Password, { max: 25 }))
+      return "Password must be at most 25 characters";
+
+    return "Everything Okay";
+  } catch (error) {
+    console.error(error);
     
-    // Check if userName has between 4 and 25 characters
-    if(!validator.isLength(data.userName, {min: 4,})) return 'Username too short';
-
-    if(!validator.isLength(data.userName, {max: 15,})) return 'Username too long';
-
-    // Need to validate more stuff like password
-
-    return 'Everything Okay';
-
+  }
 };
-

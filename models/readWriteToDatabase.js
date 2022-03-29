@@ -1,6 +1,6 @@
 
-// Register a new user.
-export const handleRegistration = async(documentClient, parameters) => {
+// Read, Write, Add and Delete data from DynamoDB.
+export const readWriteToDatabase = async(documentClient, parameters, method) => {
 
     /* Reference: 
     https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.04.html
@@ -13,11 +13,11 @@ export const handleRegistration = async(documentClient, parameters) => {
     update: update an item
     delete: delete an item
     */
-    return await documentClient.put(parameters, (error, data) => {
+    return await documentClient[method](parameters, (error, data) => {
         if (error) {
-            console.error("Unable to add item. Error JSON:", JSON.stringify(error, null, 2));
+            console.error(`Unable to ${method} item. Error JSON:`, JSON.stringify(error, null, 2));
         } else {
-            console.log("Add item:", JSON.stringify(data, null, 2));
+            console.log(`${method} item:`, JSON.stringify(data, null, 2));
         }
     }).promise();
 
