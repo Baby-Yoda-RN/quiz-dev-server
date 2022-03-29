@@ -11,7 +11,7 @@ routerRegister.post('/register', async(request, response) => {
 
     const documentClient = new AWS.DynamoDB.DocumentClient();
 
-    // request body should include at least username, email and password
+    // request body should include at least email and password
 
     // Validate data
     try {
@@ -29,7 +29,7 @@ routerRegister.post('/register', async(request, response) => {
     const parametersGetUser = {
         TableName: request.body.TableName, 
         Key: {
-            Username: request.body.Username,
+            Email: request.body.Email,
             //id: 0, // should we increment id starting with 0 or use uuid?
         }
     };
@@ -42,23 +42,23 @@ routerRegister.post('/register', async(request, response) => {
         TableName: request.body.TableName, 
         Item: {
             // id: 0, 
-            email: request.body.email, 
-            Username: request.body.Username, 
+            Email: request.body.Email, 
             Password: hashPassword
         },
-        // This makes sure that if Username exists, it will NOT add to database.
-        ConditionExpression: "attribute_not_exists(Username)"
+        // This makes sure that if Email exists, it will NOT add to database.
+        ConditionExpression: "attribute_not_exists(Email)"
     };
 
 
     try {
-        // Check if Username already exist
+        // Check if Email already exist
+
         const checkUserExist = await readWriteToDatabase(documentClient, parametersGetUser, 'get');
 
-        // If Username already exists, prevent registration.
+        // If Email already exists, prevent registration.
         if (Object.keys(checkUserExist).length > 0) {
-            console.log(`${parametersGetUser.Key.Username} exists`);
-            response.send('Username already exist');
+            console.log(`${parametersGetUser.Key.Email} exists`);
+            response.send('Email already exist');
         }
 
         // Only register if user doesn't exist
