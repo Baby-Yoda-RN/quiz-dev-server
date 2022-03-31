@@ -16,8 +16,12 @@ routerGetAllTests.get('/getalltests', async(request, response) => {
 
     try {
         const allTests = await readWriteToDatabase(documentClient, parametersGetAllTests, 'scan');
-        console.log(allTests.Items);
-        response.send(allTests.Items);
+
+        const sortedAllTests = allTests.Items.sort((firstItem, secondItem) => firstItem.id - secondItem.id);
+
+        // console.log(sortedAllTests);
+
+        response.send(sortedAllTests);
 
     } catch (error) {
         response.status(400).send(error);
