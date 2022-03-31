@@ -29,8 +29,7 @@ routerRegister.post('/register', async(request, response) => {
     const parametersGetUser = {
         TableName: request.body.TableName, 
         Key: {
-            Email: request.body.Email,
-            //id: 0, // should we increment id starting with 0 or use uuid?
+            Email: request.body.Email
         }
     };
 
@@ -41,9 +40,9 @@ routerRegister.post('/register', async(request, response) => {
     const parametersRegister = {
         TableName: request.body.TableName, 
         Item: {
-            // id: 0, 
             Email: request.body.Email, 
-            Password: hashPassword
+            Password: hashPassword,
+            Answers: {}
         },
         // This makes sure that if Email exists, it will NOT add to database.
         ConditionExpression: "attribute_not_exists(Email)"
