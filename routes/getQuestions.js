@@ -10,15 +10,21 @@ routerGetQuestions.get(
   async (request, response) => {
     const documentClient = new AWS.DynamoDB.DocumentClient();
 
+    console.log(request.params);
+
     // Only reponds with certain category because all category will return error
     const parametersGetQuestions = {
       TableName: process.env.QuestionTableName,
-      FilterExpression: "#category = :category",
+      FilterExpression: "#category = :category or #testId = :testId",
       ExpressionAttributeNames: {
         "#category": "category",
+        "#testId": "testId",
       },
       ExpressionAttributeValues: {
         ":category": request.params.category,
+        ":testId":
+          (!!Number(request.params.category) || request.params.category == '0') &&
+          Number(request.params.category),
       },
     };
 
