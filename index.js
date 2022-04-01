@@ -7,6 +7,7 @@ import { routerDelete } from "./routes/deleteUser.js";
 import { routerGetAllUsers } from "./routes/getAllUsers.js";
 import { routerGetAllTests } from "./routes/getAllTests.js";
 import { routerGetQuestions } from "./routes/getQuestions.js";
+import { routerCheckAnswers } from "./routes/checkAnswers.js";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -43,3 +44,4 @@ app.use("/api", routerDelete);
 app.use("/api", routerGetAllUsers);
 app.use("/api", routerGetAllTests);
 app.use("/api", routerGetQuestions);
+app.use("/api", routerCheckAnswers);
