@@ -15,7 +15,7 @@ routerLogin.post('/login', async(request, response) => {
 
     // Check if user exists in database, if not create account else send error message
     const parametersGetUser = {
-        TableName: request.body.TableName, 
+        TableName: process.env.UsersTableName, 
         Key: {
             Email: request.body.Email,
         }
@@ -29,6 +29,8 @@ routerLogin.post('/login', async(request, response) => {
         // If Email exists
         if (Object.keys(checkUserExist).length > 0) {
             console.log(`${parametersGetUser.Key.Email} exists`);
+
+            console.log(checkUserExist)
 
             // If the hash password from database is same as hash password from request body, then login is valid.
             if(await bcrypt.compare(request.body.Password, checkUserExist.Item.Password)){
