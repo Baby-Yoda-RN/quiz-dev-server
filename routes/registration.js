@@ -27,7 +27,7 @@ routerRegister.post('/register', async(request, response) => {
 
     // Check if user exists in database, if not create account else send error message
     const parametersGetUser = {
-        TableName: request.body.TableName, 
+        TableName: process.env.UsersTableName, 
         Key: {
             Email: request.body.Email
         }
@@ -38,7 +38,7 @@ routerRegister.post('/register', async(request, response) => {
     const hashPassword = await bcrypt.hash(request.body.Password, salt);
 
     const parametersRegister = {
-        TableName: request.body.TableName, 
+        TableName: process.env.UsersTableName, 
         Item: {
             Email: request.body.Email, 
             Password: hashPassword,
