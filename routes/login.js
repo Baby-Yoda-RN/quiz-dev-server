@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 dotenv.config({path: '../.env'});
 import { readWriteToDatabase } from '../models/readWriteToDatabase.js';
+import { delayTime } from "../constants/index.js";
 
 export const routerLogin = express.Router();
 
@@ -23,6 +24,9 @@ routerLogin.post('/login', async(request, response) => {
 
 
     try {
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        await delay(delayTime);
+        
         // Check if Email already exist
         const checkUserExist = await readWriteToDatabase(documentClient, parametersGetUser, 'get');
 

@@ -2,6 +2,7 @@ import express from "express";
 import AWS from "aws-sdk";
 import { readWriteToDatabase } from "../models/readWriteToDatabase.js";
 import { checkAnswers } from "../utilities/checkAnswers.js";
+import {delayTime} from '../constants/index.js';
 
 export const routerCheckAnswers = express.Router();
 
@@ -10,6 +11,9 @@ routerCheckAnswers.post("/checkanswers", async (request, response) => {
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
   try {
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    await delay(delayTime);
+
     const userAnswersId = request.body.userAnswers
       .map((object) => object.id)
       .sort((a, b) => a - b);
