@@ -23,7 +23,7 @@ export const checkAnswers = (
   const userCorrectAnswers = userAnswers.filter((userAnswerObject) =>
     correctAnswers.some(
       (correctAnswerObject) =>
-      userAnswerObject.userAnswer === correctAnswerObject.correctAnswer && userAnswerObject.id === correctAnswerObject.id
+      (userAnswerObject.userAnswer).toLocaleLowerCase() === (correctAnswerObject.correctAnswer).toLocaleLowerCase() && userAnswerObject.id === correctAnswerObject.id
     )
   );
 
