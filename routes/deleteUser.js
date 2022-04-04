@@ -1,6 +1,7 @@
 import express from "express";
 import AWS from "aws-sdk";
 import { readWriteToDatabase } from "../models/readWriteToDatabase.js";
+import { delayTime } from "../constants/index.js";
 
 export const routerDelete = express.Router();
 
@@ -24,6 +25,9 @@ routerDelete.delete("/deleteuser", async (request, response) => {
   };
 
   try {
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    await delay(delayTime);
+    
     // Check if Email already exist
     const checkUserExist = await readWriteToDatabase(
       documentClient,

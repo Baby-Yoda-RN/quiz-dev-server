@@ -3,6 +3,7 @@ import AWS from 'aws-sdk';
 import bcrypt from "bcryptjs";
 import { registerValidation } from '../validation/validate.js';
 import { readWriteToDatabase } from '../models/readWriteToDatabase.js';
+import { delayTime } from "../constants/index.js";
 
 export const routerRegister = express.Router();
 
@@ -15,6 +16,9 @@ routerRegister.post('/register', async(request, response) => {
 
     // Validate data
     try {
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        await delay(delayTime);
+
         const validateResult = registerValidation(request.body);
         if (validateResult !== 'Everything Okay') {
             console.log(validateResult);

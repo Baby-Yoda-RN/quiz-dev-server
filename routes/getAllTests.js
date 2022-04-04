@@ -1,6 +1,7 @@
 import express from 'express';
 import AWS from 'aws-sdk';
 import { readWriteToDatabase } from '../models/readWriteToDatabase.js';
+import { delayTime } from '../constants/index.js';
 
 export const routerGetAllTests = express.Router();
 
@@ -15,6 +16,9 @@ routerGetAllTests.get('/getalltests', async(request, response) => {
     };
 
     try {
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        await delay(delayTime);
+
         const allTests = await readWriteToDatabase(documentClient, parametersGetAllTests, 'scan');
 
         const sortedAllTests = allTests.Items.sort((firstItem, secondItem) => firstItem.id - secondItem.id);

@@ -1,6 +1,7 @@
 import express from "express";
 import AWS from "aws-sdk";
 import { readWriteToDatabase } from "../models/readWriteToDatabase.js";
+import { delayTime } from "../constants/index.js";
 
 export const routerGetQuestions = express.Router();
 
@@ -23,12 +24,16 @@ routerGetQuestions.get(
       ExpressionAttributeValues: {
         ":category": request.params.category,
         ":testId":
-          (!!Number(request.params.category) || request.params.category == '0') &&
+          (!!Number(request.params.category) ||
+            request.params.category == "0") &&
           Number(request.params.category),
       },
     };
 
     try {
+      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      await delay(delayTime);
+
       const questions = await readWriteToDatabase(
         documentClient,
         parametersGetQuestions,
