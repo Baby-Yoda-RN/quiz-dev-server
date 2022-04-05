@@ -11,12 +11,14 @@ import { delayTime } from "../constants/index.js";
 export const routerProfile = express.Router();
 
 // The client make a post request to '/register', allowing a new account to be created (add) to database.
-routerProfile.post("/profile", async (request, response) => {
+routerProfile.get("/profile", async (request, response) => {
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
   try {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     await delay(delayTime);
+
+    console.log(request.headers.authorization)
 
     const token = request.headers.authorization;
 
