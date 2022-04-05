@@ -50,8 +50,10 @@ routerLogin.post("/login", async (request, response) => {
           {
             data: {
               Email: request.body.Email,
+              Name: checkUserExist.Item.Name,
               Answers: checkUserExist.Item.Answers,
               Scores: checkUserExist.Item.Scores,
+              TestStates: checkUserExist.Item.TestStates,
             },
           },
           process.env.TOKEN_SECRET,
