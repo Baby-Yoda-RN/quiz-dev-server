@@ -17,7 +17,7 @@ export const readWriteToDatabase = async(documentClient, parameters, method) => 
         if (error) {
             console.error(`Unable to ${method} item. Error JSON:`, JSON.stringify(error, null, 2));
         } else {
-            console.log(`${method} item:`, JSON.stringify(data, null, 2));
+            // console.log(`${method} item:`, JSON.stringify(data, null, 2));
         }
     }).promise();
 

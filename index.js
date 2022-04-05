@@ -8,6 +8,7 @@ import { routerGetAllUsers } from "./routes/getAllUsers.js";
 import { routerGetAllTests } from "./routes/getAllTests.js";
 import { routerGetQuestions } from "./routes/getQuestions.js";
 import { routerCheckAnswers } from "./routes/checkAnswers.js";
+import { routerProfile } from "./routes/profile.js";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -45,3 +46,4 @@ app.use("/api", routerGetAllUsers);
 app.use("/api", routerGetAllTests);
 app.use("/api", routerGetQuestions);
 app.use("/api", routerCheckAnswers);
+app.use("/api", routerProfile);
