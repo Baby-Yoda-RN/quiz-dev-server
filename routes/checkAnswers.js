@@ -10,6 +10,8 @@ export const routerCheckAnswers = express.Router();
 routerCheckAnswers.post("/checkanswers", async (request, response) => {
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
+  console.log(request.headers)
+
   try {
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     await delay(delayTime);
