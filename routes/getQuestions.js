@@ -30,6 +30,19 @@ routerGetQuestions.get(
       },
     };
 
+    const unescapeHTML = (str) =>
+      str.replace(
+        /&amp;|&lt;|&gt;|&#39;|&quot;/g,
+        (tag) =>
+          ({
+            "&amp;": "&",
+            "&lt;": "<",
+            "&gt;": ">",
+            "&#39;": "'",
+            "&quot;": '"',
+          }[tag] || tag)
+      );
+
     try {
       const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
       await delay(delayTime);
@@ -44,9 +57,14 @@ routerGetQuestions.get(
         (firstItem, secondItem) => firstItem.id - secondItem.id
       );
 
-      //console.log(sortedQuestions);
+      const unescapeHTMLQuestions = sortedQuestions.map((object) => ({
+        ...object,
+       "question": unescapeHTML(object.question),
+      }));
 
-      response.send(sortedQuestions);
+      //console.log(unescapeHTMLQuestions);
+
+      response.send(unescapeHTMLQuestions);
     } catch (error) {
       response.status(400).send(error);
     }
