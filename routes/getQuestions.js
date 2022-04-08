@@ -32,13 +32,14 @@ routerGetQuestions.get(
 
     const unescapeHTML = (str) =>
       str.replace(
-        /&amp;|&lt;|&gt;|&#39;|&quot;/g,
+        /&amp;|&lt;|&gt;|&#39;|&#039;|&quot;/g,
         (tag) =>
           ({
             "&amp;": "&",
             "&lt;": "<",
             "&gt;": ">",
             "&#39;": "'",
+            "&#039;": "'",
             "&quot;": '"',
           }[tag] || tag)
       );
