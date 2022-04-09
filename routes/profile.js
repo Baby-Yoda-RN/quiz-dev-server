@@ -42,6 +42,10 @@ routerProfile.get("/profile", async (request, response) => {
       "get"
     );
 
+    let testScores;
+  
+    testScores = Object.keys(checkUserExist.Item.Scores).map(key => checkUserExist.Item.Scores[key])
+    
     // If Email exists
     if (Object.keys(checkUserExist).length > 0) {
       console.log(`${parametersGetUser.Key.Email} exists`);
@@ -51,7 +55,7 @@ routerProfile.get("/profile", async (request, response) => {
         Name: checkUserExist.Item.Name,
         Email: checkUserExist.Item.Email,
         Answers: checkUserExist.Item.Answers,
-        Scores: checkUserExist.Item.Scores,
+        Scores: testScores, //checkUserExist.Item.Scores,
         TestStates: checkUserExist.Item.TestStates,
         Image: checkUserExist.Item.Image
       });
