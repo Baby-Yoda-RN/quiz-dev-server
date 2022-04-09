@@ -1,8 +1,9 @@
 import express from "express";
 import AWS from "aws-sdk";
+import jwt_decode from "jwt-decode";
 import { readWriteToDatabase } from "../models/readWriteToDatabase.js";
 import { checkAnswers } from "../utilities/checkAnswers.js";
-import {delayTime} from '../constants/index.js';
+import { delayTime } from "../constants/index.js";
 
 export const routerCheckAnswers = express.Router();
 
@@ -10,10 +11,10 @@ export const routerCheckAnswers = express.Router();
 routerCheckAnswers.post("/checkanswers", async (request, response) => {
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
-  console.log(request.headers)
+  console.log(request.headers);
 
   try {
-    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     await delay(delayTime);
 
     const userAnswersId = request.body.userAnswers
@@ -25,7 +26,35 @@ routerCheckAnswers.post("/checkanswers", async (request, response) => {
       userAnswersId[userAnswersId.length - 1],
     ];
 
-    // Check if user exists in database, if not create account else send error message
+    /************************************************************************/
+    // Check if user from token exists
+    /************************************************************************/
+
+    const token = request.headers.authorization;
+
+    const decoded = jwt_decode(token);
+
+    const {
+      data: { Email: email },
+    } = decoded;
+
+    const parametersGetUser = {
+      TableName: process.env.UsersTableName,
+      Key: {
+        Email: email,
+      },
+    };
+
+    // Check if Email already exist
+    const checkUserExist = await readWriteToDatabase(
+      documentClient,
+      parametersGetUser,
+      "get"
+    );
+
+    /************************************************************************/
+    // Get questions from database
+    /************************************************************************/
     const parametersGetQuestions = {
       TableName: process.env.QuestionTableName,
       FilterExpression: "#id between :firstId and :lastId",
@@ -38,22 +67,51 @@ routerCheckAnswers.post("/checkanswers", async (request, response) => {
       },
     };
 
-    const allTests = await readWriteToDatabase(
+    const allQuestions = await readWriteToDatabase(
       documentClient,
       parametersGetQuestions,
       "scan"
     );
 
-    const sortedAllTests = allTests.Items.sort(
+
+    /************************************************************************/
+    // Calculate score
+    /************************************************************************/
+
+    const sortedAllQuestions = allQuestions.Items.sort(
       (firstItem, secondItem) => firstItem.id - secondItem.id
     );
 
     // Check for correct answers
     const score = checkAnswers(
       request.body.userAnswers,
-      sortedAllTests
+      sortedAllQuestions
     ).toString();
 
+    /************************************************************************/
+    // Save scores to datbase
+    /************************************************************************/
+    const testId = sortedAllQuestions[0].testId;
+
+    // If Email exists
+    if (Object.keys(checkUserExist).length > 0) {
+
+      const parametersAddScorer = {
+        TableName: process.env.UsersTableName,
+        Item: {
+          Email: email,
+          Scores: {...checkUserExist.Item.Scores, [testId]:score} 
+        },
+      };
+
+      const saveScore = await readWriteToDatabase(
+        documentClient,
+        parametersAddScorer,
+        "put"
+      );
+    }
+
+    // send response to client
     response.status(200).send(score);
   } catch (error) {
     response.status(400).send(error);
