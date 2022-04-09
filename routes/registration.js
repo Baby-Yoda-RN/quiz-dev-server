@@ -46,7 +46,9 @@ routerRegister.post('/register', async(request, response) => {
         Item: {
             Email: request.body.Email, 
             Password: hashPassword,
-            Answers: {}
+            Image: "https://react-native-baby-yoda-profile-images.s3.us-west-2.amazonaws.com/unknown.png",
+            Answers: {"0": 0},
+            Scores: {"0": 0}
         },
         // This makes sure that if Email exists, it will NOT add to database.
         ConditionExpression: "attribute_not_exists(Email)"
