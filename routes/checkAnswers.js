@@ -93,19 +93,23 @@ routerCheckAnswers.post("/checkanswers", async (request, response) => {
     // Save scores to datbase
     /************************************************************************/
     const testId = sortedAllQuestions[0].testId;
-console.log(scorePercent)
-    // If Email exists
-    // if (Object.keys(checkUserExist).length > 0) {
-    //   const parametersAddScorer = {
-    //     TableName: process.env.UsersTableName,
-    //     Item: {
-    //       Email: email,
-    //       Scores: { ...checkUserExist.Item.Scores, [testId]: scorePercent },
-    //     },
-    //   };
 
-    //   await readWriteToDatabase(documentClient, parametersAddScorer, "update");
-    // }
+    // If Email exists
+    if (Object.keys(checkUserExist).length > 0) {
+      const parametersAddScorer = {
+        TableName: process.env.UsersTableName,
+        Key: {
+          Email: email,
+        },
+        UpdateExpression: "set Scores = :scores",
+        ExpressionAttributeValues:{
+          ":scores": {...checkUserExist.Item.Scores, [testId]: scorePercent}
+        },
+        ReturnValues:"UPDATED_NEW"
+      };
+
+      await readWriteToDatabase(documentClient, parametersAddScorer, "update");
+    }
 
     // send response to client
     response.status(200).send(score);
