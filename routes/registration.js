@@ -33,7 +33,7 @@ routerRegister.post('/register', async(request, response) => {
     const parametersGetUser = {
         TableName: process.env.UsersTableName, 
         Key: {
-            Email: request.body.Email
+            email: request.body.email
         }
     };
 
@@ -44,25 +44,25 @@ routerRegister.post('/register', async(request, response) => {
     const parametersRegister = {
         TableName: process.env.UsersTableName, 
         Item: {
-            Email: request.body.Email, 
+            email: request.body.email, 
             Password: hashPassword,
             Image: "https://react-native-baby-yoda-profile-images.s3.us-west-2.amazonaws.com/unknown.png",
             Answers: {"0": 0},
             Scores: {"0": 0}
         },
-        // This makes sure that if Email exists, it will NOT add to database.
-        ConditionExpression: "attribute_not_exists(Email)"
+        // This makes sure that if email exists, it will NOT add to database.
+        ConditionExpression: "attribute_not_exists(email)"
     };
 
 
     try {
-        // Check if Email already exist
+        // Check if email already exist
 
         const checkUserExist = await readWriteToDatabase(documentClient, parametersGetUser, 'get');
 
-        // If Email already exists, prevent registration.
+        // If email already exists, prevent registration.
         if (Object.keys(checkUserExist).length > 0) {
-            console.log(`${parametersGetUser.Key.Email} exists`);
+            console.log(`${parametersGetUser.Key.email} exists`);
             response.send('Email already exist');
         }
 

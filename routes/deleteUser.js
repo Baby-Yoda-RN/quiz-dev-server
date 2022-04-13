@@ -13,14 +13,14 @@ routerDelete.delete("/deleteuser", async (request, response) => {
   const parametersGetUser = {
     TableName: process.env.UsersTableName,
     Key: {
-      Email: request.body.Email,
+      email: request.body.email,
     },
   };
 
   const parametersDelete = {
     TableName: process.env.UsersTableName,
     Key: {
-      Email: request.body.Email,
+      email: request.body.email,
     },
   };
 
@@ -28,14 +28,14 @@ routerDelete.delete("/deleteuser", async (request, response) => {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     await delay(delayTime);
     
-    // Check if Email already exist
+    // Check if email already exist
     const checkUserExist = await readWriteToDatabase(
       documentClient,
       parametersGetUser,
       "get"
     );
 
-    // If Email already exists, delete account.
+    // If email already exists, delete account.
     if (Object.keys(checkUserExist).length > 0) {
       try {
         readWriteToDatabase(documentClient, parametersDelete, "delete");
@@ -47,8 +47,8 @@ routerDelete.delete("/deleteuser", async (request, response) => {
 
     // Only register if user doesn't exist
     else {
-      console.log(`${parametersGetUser.Key.Email} doesn't exist`);
-      response.send(`${parametersGetUser.Key.Email} doesn't exist`);
+      console.log(`${parametersGetUser.Key.email} doesn't exist`);
+      response.send(`${parametersGetUser.Key.email} doesn't exist`);
     }
   } catch (error) {
     response.status(400).send(error);
