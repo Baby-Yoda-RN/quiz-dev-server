@@ -25,17 +25,17 @@ routerProfile.get("/profile", async (request, response) => {
     const decoded = jwt_decode(token);
 
     const {
-      data: { Email: email },
+      data: { email: email },
     } = decoded;
 
     const parametersGetUser = {
       TableName: process.env.UsersTableName,
       Key: {
-        Email: email,
+        email: email,
       },
     };
 
-    // Check if Email already exist
+    // Check if email already exist
     const checkUserExist = await readWriteToDatabase(
       documentClient,
       parametersGetUser,
@@ -44,23 +44,22 @@ routerProfile.get("/profile", async (request, response) => {
 
     let testScores;
   
-    testScores = Object.keys(checkUserExist.Item.Scores).map(key => checkUserExist.Item.Scores[key])
+    testScores = Object.keys(checkUserExist.Item.scores).map(key => checkUserExist.Item.scores[key])
     
-    // If Email exists
+    // If email exists
     if (Object.keys(checkUserExist).length > 0) {
-      console.log(`${parametersGetUser.Key.Email} exists`);
+      console.log(`${parametersGetUser.Key.email} exists`);
 
       console.log(checkUserExist);
       response.status(200).send({
-        Name: checkUserExist.Item.Name,
-        Email: checkUserExist.Item.Email,
-        Answers: checkUserExist.Item.Answers,
-        Scores: testScores, //checkUserExist.Item.Scores,
-        TestStates: checkUserExist.Item.TestStates,
-        Image: checkUserExist.Item.Image
+        name: checkUserExist.Item.name,
+        email: checkUserExist.Item.email,
+        answers: checkUserExist.Item.answers,
+        scores: testScores, //checkUserExist.Item.scores,
+        image: checkUserExist.Item.image
       });
     } else {
-      response.send("Wrong Email or Password.");
+      response.send("Wrong email or Password.");
     }
   } catch (error) {
     response.status(400).send(error);

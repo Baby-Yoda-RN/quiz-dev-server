@@ -17,24 +17,26 @@ routerLogin.post("/login", async (request, response) => {
   const parametersGetUser = {
     TableName: process.env.UsersTableName,
     Key: {
-      Email: request.body.Email,
+      email: request.body.email,
     },
   };
+
+
 
   try {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     await delay(delayTime);
 
-    // Check if Email already exist
+    // Check if email already exist
     const checkUserExist = await readWriteToDatabase(
       documentClient,
       parametersGetUser,
       "get"
     );
 
-    // If Email exists
+    // If email exists
     if (Object.keys(checkUserExist).length > 0) {
-      console.log(`${parametersGetUser.Key.Email} exists`);
+      console.log(`${parametersGetUser.Key.email} exists`);
 
       console.log(checkUserExist);
 
@@ -49,12 +51,11 @@ routerLogin.post("/login", async (request, response) => {
         const token = jwt.sign(
           {
             data: {
-              Email: request.body.Email,
-              Name: checkUserExist.Item.Name,
-              Image: checkUserExist.Item.Image,
-              Answers: checkUserExist.Item.Answers,
-              Scores: checkUserExist.Item.Scores,
-              TestStates: checkUserExist.Item.TestStates,
+              email: request.body.email,
+              name: checkUserExist.Item.name,
+              image: checkUserExist.Item.image,
+              answers: checkUserExist.Item.answers,
+              scores: checkUserExist.Item.scores,
             },
           },
           process.env.TOKEN_SECRET,
@@ -64,10 +65,10 @@ routerLogin.post("/login", async (request, response) => {
         );
         response.send(token);
       } else {
-        response.send("Wrong Email or Password.");
+        response.send("Wrong email or Password.");
       }
     } else {
-      response.send("Wrong Email or Password.");
+      response.send("Wrong email or Password.");
     }
   } catch (error) {
     response.status(400).send(error);
