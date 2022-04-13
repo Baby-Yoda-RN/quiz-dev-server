@@ -43,8 +43,8 @@ routerLogin.post("/login", async (request, response) => {
       // If the hash password from database is same as hash password from request body, then login is valid.
       if (
         await bcrypt.compare(
-          request.body.Password,
-          checkUserExist.Item.Password
+          request.body.password,
+          checkUserExist.Item.password
         )
       ) {
         //Create and assign a token
