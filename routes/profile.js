@@ -59,7 +59,7 @@ routerProfile.get("/profile", async (request, response) => {
         image: checkUserExist.Item.image
       });
     } else {
-      response.send("Wrong email or Password.");
+      response.send("Wrong Email or Password.");
     }
   } catch (error) {
     response.status(400).send(error);
