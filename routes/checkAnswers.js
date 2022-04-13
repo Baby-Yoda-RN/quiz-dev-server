@@ -35,17 +35,17 @@ routerCheckAnswers.post("/checkanswers", async (request, response) => {
     const decoded = jwt_decode(token);
 
     const {
-      data: { Email: email },
+      data: { email: email },
     } = decoded;
 
     const parametersGetUser = {
       TableName: process.env.UsersTableName,
       Key: {
-        Email: email,
+        email: email,
       },
     };
 
-    // Check if Email already exist
+    // Check if email already exist
     const checkUserExist = await readWriteToDatabase(
       documentClient,
       parametersGetUser,
@@ -94,12 +94,12 @@ routerCheckAnswers.post("/checkanswers", async (request, response) => {
     /************************************************************************/
     const testId = sortedAllQuestions[0].testId;
 
-    // If Email exists
+    // If email exists
     if (Object.keys(checkUserExist).length > 0) {
       const parametersAddScorer = {
         TableName: process.env.UsersTableName,
         Key: {
-          Email: email,
+          email: email,
         },
         UpdateExpression: "set Scores = :scores",
         ExpressionAttributeValues:{
