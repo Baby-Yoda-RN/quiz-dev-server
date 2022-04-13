@@ -65,10 +65,10 @@ routerLogin.post("/login", async (request, response) => {
         );
         response.send(token);
       } else {
-        response.send("Wrong email or Password.");
+        response.status(401).send("Wrong Email or Password.");
       }
     } else {
-      response.send("Wrong email or Password.");
+      response.status(401).send("Wrong Email or Password.");
     }
   } catch (error) {
     response.status(400).send(error);
